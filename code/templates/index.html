@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline';">
+    <title>Secure Vehicle Registration Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script>
+        // Client-side form validation
+        function validateRegisterForm() {
+            const registration_number = document.forms["registerForm"]["registration_number"].value;
+            const model = document.forms["registerForm"]["model"].value;
+            const owner = document.forms["registerForm"]["owner"].value;
+            const price = document.forms["registerForm"]["price"].value;
+            if (!registration_number || !model || !owner || !price) {
+                alert("All fields are required to register a vehicle.");
+                return false;
+            }
+            if (model <= 0 || price <= 0) {
+                alert("Model year and Price must be positive numbers.");
+                return false;
+            }
+            return true;
+        }
+
+        function validateTransferForm() {
+            const vehicle_id = document.forms["transferForm"]["vehicle_id"].value;
+            const new_owner = document.forms["transferForm"]["new_owner"].value;
+            if (!vehicle_id || !new_owner) {
+                alert("Vehicle ID and New Owner are required.");
+                return false;
+            }
+            if (vehicle_id <= 0) {
+                alert("Vehicle ID must be a positive number.");
+                return false;
+            }
+            return true;
+        }
+    </script>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="card">
+            <h1>Secure Vehicle Registration Management System</h1>
+            <p>Welcome, {{ current_user.id }} | <a href="{{ url_for('logout') }}">Logout</a></p>
+
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                <p class="flash {{ category }}">{{ message }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+        </div>
+
+        <!-- Register Vehicle Form -->
+        <div class="card">
+            <h2>Register Vehicle</h2>
+            <form name="registerForm" action="{{ url_for('register_vehicle') }}" method="POST" onsubmit="return validateRegisterForm()">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                <input type="text" name="registration_number" placeholder="Registration Number" required pattern="[A-Za-z0-9\s-]+" title="Registration number can only contain letters, numbers, spaces, and hyphens">
+                <input type="number" name="model" placeholder="Model Year" required min="1900" max="2025">
+                <input type="text" name="owner" placeholder="Owner Name" required pattern="[A-Za-z\s]+" title="Owner name can only contain letters and spaces">
+                <input type="number" name="price" placeholder="Price" required min="1">
+                <button type="submit">Register</button>
+            </form>
+        </div>
+
+        <!-- Transfer Ownership Form (Admin Only) -->
+        {% if user_role == 'admin' %}
+        <div class="card">
+            <h2>Transfer Ownership</h2>
+            <form name="transferForm" action="{{ url_for('transfer_ownership') }}" method="POST" onsubmit="return validateTransferForm()">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                <input type="number" name="vehicle_id" placeholder="Vehicle ID" required min="1">
+                <input type="text" name="new_owner" placeholder="New Owner Name" required pattern="[A-Za-z\s]+" title="Owner name can only contain letters and spaces">
+                <button type="submit">Transfer Ownership</button>
+            </form>
+        </div>
+        {% endif %}
+
+        <!-- Vehicle Transaction History -->
+        <div class="card">
+            <h2>Vehicle Transaction History</h2>
+            <form action="{{ url_for('view_transactions') }}" method="POST">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                <input type="number" name="vehicle_id" placeholder="Enter Vehicle ID" required min="1">
+                <button type="submit">View Transactions</button>
+            </form>
+            {% if transactions %}
+            <div class="audit-log">
+                <h3>Transactions for Vehicle ID {{ transactions.vehicle_id }}</h3>
+                <ul>
+                    {% for tx in transactions.transactions %}
+                    <li>{{ tx }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- List of Registered Vehicles -->
+        <div class="card">
+            <h2>Registered Vehicles</h2>
+            {% if vehicles %}
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Registration Number</th>
+                            <th>Model Year</th>
+                            <th>Owner</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for vehicle in vehicles.values() %}
+                        <tr>
+                            <td>{{ vehicle.id }}</td>
+                            <td>{{ vehicle.registration_number }}</td>
+                            <td>{{ vehicle.model }}</td>
+                            <td>{{ vehicle.owner }}</td>
+                            <td>{{ vehicle.price }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p>No vehicles registered yet.</p>
+            {% endif %}
+        </div>
+
+        <!-- Blockchain Transactions -->
+        <div class="card">
+            <h2>Blockchain Transactions</h2>
+            <div class="blockchain-list">
+                <ul>
+                    {% for block in blockchain.chain %}
+                    <li>
+                        <strong>Block {{ block.index }} (Nonce: {{ block.nonce }})</strong>
+                        <pre>{{ block.transactions }}</pre>
+                        <em>Hash: {{ block.hash }}</em><br>
+                        <em>Previous Hash: {{ block.previous_hash }}</em><br>
+                        <em>Timestamp: {{ block.timestamp }}</em>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- Audit Log -->
+        <div class="card">
+            <h2>Audit Log</h2>
+            <div class="audit-log">
+                {% if audit_log %}
+                <ul>
+                    {% for entry in audit_log %}
+                    <li>{{ entry }}</li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p>No audit logs available.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

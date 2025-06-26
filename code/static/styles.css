@@ -1,0 +1,259 @@
+/* General styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f7fa;
+    margin: 0;
+    padding: 0;
+    color: #2d3748;
+    line-height: 1.7;
+}
+
+/* Main wrapper */
+.wrapper {
+    max-width: 1100px;
+    margin: 30px auto;
+    padding: 20px;
+}
+
+/* Card container */
+.card {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid #319795;
+}
+
+/* Headings */
+h1 {
+    color: #2c7a7b;
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 25px;
+    font-weight: 700;
+}
+
+h2 {
+    color: #4a5568;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    font-weight: 500;
+    position: relative;
+}
+
+h2::after {
+    content: '';
+    width: 50px;
+    height: 3px;
+    background: #319795;
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+}
+
+/* Forms */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+input {
+    padding: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: #f7fafc;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus {
+    border-color: #319795;
+    outline: none;
+    box-shadow: 0 0 6px rgba(49, 151, 149, 0.3);
+}
+
+/* Buttons */
+button {
+    padding: 12px 20px;
+    background: #319795;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+    display: inline-block;
+    text-align: center;
+}
+
+button:hover {
+    background: #2c7a7b;
+    transform: translateY(-2px);
+}
+
+button:active {
+    background: #285e61;
+    transform: translateY(0);
+}
+
+/* Flash Messages */
+.flash-messages .flash {
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-size: 0.95rem;
+}
+
+.flash-messages .success {
+    background: #e6fffa;
+    color: #234e52;
+    border: 1px solid #b2f5ea;
+}
+
+.flash-messages .error {
+    background: #fff5f5;
+    color: #742a2a;
+    border: 1px solid #feb2b2;
+}
+
+/* Tables */
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    max-width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    background: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    table-layout: fixed;
+}
+
+table th, table td {
+    border: 1px solid #e2e8f0;
+    padding: 12px;
+    text-align: center;
+    overflow-wrap: break-word;
+    white-space: normal;
+}
+
+table th {
+    background: #319795;
+    color: #ffffff;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* Specific column widths */
+table th:nth-child(1), table td:nth-child(1) { /* ID */
+    width: 10%;
+}
+table th:nth-child(2), table td:nth-child(2) { /* Registration Number */
+    width: 30%;
+}
+table th:nth-child(3), table td:nth-child(3) { /* Model Year */
+    width: 15%;
+}
+table th:nth-child(4), table td:nth-child(4) { /* Owner */
+    width: 25%;
+    max-width: 180px;
+}
+table th:nth-child(5), table td:nth-child(5) { /* Price */
+    width: 20%;
+}
+
+table tr:nth-child(even) {
+    background: #f7fafc;
+}
+
+table tr:hover {
+    background: #edf2f7;
+}
+
+/* Audit Log and Blockchain */
+.audit-log, .blockchain-list {
+    background: #f7fafc;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    margin-top: 20px;
+}
+
+.audit-log ul, .blockchain-list ul {
+    list-style: none;
+    padding: 0;
+}
+
+.audit-log li, .blockchain-list li {
+    padding: 10px 0;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.blockchain-list pre {
+    background: #edf2f7;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+/* Links */
+a {
+    color: #319795;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+a:hover {
+    color: #2c7a7b;
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    h1 {
+        font-size: 2rem;
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    input, button {
+        font-size: 0.95rem;
+        padding: 10px;
+    }
+
+    table, th, td {
+        font-size: 0.9rem;
+    }
+
+    .wrapper {
+        padding: 15px;
+    }
+
+    .card {
+        padding: 20px;
+    }
+
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    table th, table td {
+        padding: 8px;
+        font-size: 0.85rem;
+    }
+}
